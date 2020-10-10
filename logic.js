@@ -13,11 +13,23 @@ const cart = [
     },
 ];
 
-var total = document.querySelector('#total');
+const country_list = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
+
+var total = document.querySelector('#total');   
+
 
 (function(){
 
     let list = document.querySelector('.checkout--list');
+
+    let countries = document.getElementsByName('i_country');
+
+    for(let i=0; c=country_list.length, i < c; i++){
+        let option = document.createElement('option');
+        option.value = country_list[i].toLowerCase();
+        option.innerText = country_list[i];
+        countries[0].append(option);
+    }
 
     for(let i=0; c= cart.length, i < c; i++){
         list.append(buildCheckOutItem(cart[i]));
@@ -35,7 +47,6 @@ var total = document.querySelector('#total');
                 counters[i].value = oldvalue - 1;
             }
             updateSum(counters);
-            console.log('New value is '+ counters[i].value);
         }, false);
 
         counters[i].addEventListener('change', (e)=>{
@@ -44,7 +55,6 @@ var total = document.querySelector('#total');
                 e.currentTarget.value = 1;
             }
             updateSum(counters);
-            console.log('value changed to '+ parseInt(e.currentTarget.value));
         }, false);
 
         counters[i].nextSibling.addEventListener('click', (e)=>{
@@ -54,11 +64,11 @@ var total = document.querySelector('#total');
                 counters[i].value = oldvalue + 1;
             }
             updateSum(counters);
-            console.log('New value is '+ counters[i].value);
         }, false);
     }
 
 })();
+
 
 function updateSum(value){
     let sum = 0;
@@ -67,8 +77,7 @@ function updateSum(value){
     }
     if(sum!=0){
         sum+=19;
-    } 
-    console.log('total : '+sum);
+    }
     total.innerText = '$'+sum.toFixed(2);
 }
 
@@ -121,4 +130,105 @@ function buildCheckOutItem(value){
     list_item.append(item_details);
     return list_item;
 }
+
+
+(function(){
+    let smalls = document.querySelectorAll('small');
+    let inputs = document.querySelectorAll('.form-input');
+    let i=0;
+    while (i < smalls.length) {
+        smalls[i].style.display = 'none';
+        i++;
+    }
+
+    for(let i=0; c=inputs.length,i < c;i++){
+        inputs[i].addEventListener('blur', (e)=>{
+            validateField(inputs[i]);
+        }, false);
+    }
+
+})();
+
+function validateField(input){
+    let parent = input.parentElement;
+    let small = input.parentElement.nextElementSibling;
+    if(input.value == ''){
+        parent.classList.add('invalidated');
+        small.innerText = 'This field can\'t be empty.';
+        small.style.display = 'inline';
+    }else{
+        switch (input.name) {
+            case 'i_email':
+                if(!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(input.value)){
+                    parent.classList.add('invalidated');
+                    small.innerText = 'Invalid email address';
+                    small.style.display = 'inline';
+                }else{
+                    parent.classList.remove('invalidated');
+                    small.innerText = '';
+                    small.style.display = 'none';
+                }
+                break;
+            case 'i_phone':
+                if(!/^(\+)?([ 0-9]){10,16}$/g.test(input.value)){
+                    parent.classList.add('invalidated');
+                    small.innerText = 'Invalid phone number';
+                    small.style.display = 'inline';
+                }else{
+                    parent.classList.remove('invalidated');
+                    small.innerText = '';
+                    small.style.display = 'none';
+                }
+                break
+            case 'i_name':
+                if(!/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g.test(input.value)){
+                    parent.classList.add('invalidated');
+                    small.innerText = 'Invalid name';
+                    small.style.display = 'inline';
+                }else{
+                    parent.classList.remove('invalidated');
+                    small.innerText = '';
+                    small.style.display = 'none';
+                }
+                break;
+            case 'i_address':
+                if(!/^\d+[,]?\s[A-z]+\s[A-z]+/g.test(input.value)){
+                    parent.classList.add('invalidated');
+                    small.innerText = 'Invalid address';
+                    small.style.display = 'inline';
+                }else{
+                    parent.classList.remove('invalidated');
+                    small.innerText = '';
+                    small.style.display = 'none';
+                }
+                break;
+            case 'i_city':
+                if(!/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g.test(input.value)){
+                    parent.classList.add('invalidated');
+                    small.innerText = 'Invalid city name';
+                    small.style.display = 'inline';
+                }else{
+                    parent.classList.remove('invalidated');
+                    small.innerText = '';
+                    small.style.display = 'none';
+                }
+                break;
+            case 'i_postal_code':
+                if(!/^\d?\s?[A-z]?\d?/g.test(input.value)){
+                    parent.classList.add('invalidated');
+                    small.innerText = 'Invalid postal code';
+                    small.style.display = 'inline';
+                }else{
+                    parent.classList.remove('invalidated');
+                    small.innerText = '';
+                    small.style.display = 'none';
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
+}
+
 

@@ -24,6 +24,9 @@ input::-webkit-inner-spin-button {
   appearance: none;
 }
 input[type=number] {-moz-appearance: textfield;}
+small{font-size: 10px;color: red;}
+/**/
+/**/
 /**/
 /*body*/
 html, body{height: 100%;margin: 0;min-width: 280px;}
@@ -216,6 +219,10 @@ footer{
     color: var(--text-footer);
     padding: 3% 0;
 }
+.invalidated{color: red;}
+.invalidated input{border-color: red;color: red;}
+.invalidated input:focus{border-color: red;color: red; outline-color: red;}
+.invalidated ::placeholder{color: red;}
 @media screen and (min-width:600px){
     .p-body{
         padding: 2vh 10vw 0;
